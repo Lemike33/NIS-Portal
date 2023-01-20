@@ -17,6 +17,8 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string  # импортируем функцию, которая срендерит наш html в текст
 
+from django.db.models.signals import post_save  # сигнал, который сработает только после СОХРАНЕНИЯ объекта
+
 from datetime import datetime
 from .models import Post
 from .filters import NewsFilter
@@ -91,6 +93,13 @@ class NewsDetailView(DetailView):
     template_name = 'news/showNewsDetail.html'
     context_object_name = 'news'
 
+    # def get_context_data(self, **kwargs):
+    #     ctx = super(NewsDetailView, self).get_context_data(**kwargs)
+    #     news = self.get_object()
+    #     if self.request.user == news.author:
+    #         ctx['author'] = 'Yes'
+    #         return ctx
+
 
 class CreatePostsView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     """ класс для создания веб-сервиса для добавления постов(новостей/статей) """
@@ -142,7 +151,6 @@ class CreatePostsView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
 
                     }
                 )
-
                 msg = EmailMultiAlternatives(
                     subject=title,
                     body=text,  # это то же, что и message
@@ -173,20 +181,6 @@ class DeletePost(LoginRequiredMixin, DeleteView):
     template_name = 'news/post_delete.html'
     #  url куда переправлять пользователя после успешного удаления товара.
     success_url = reverse_lazy('news-main')
-
-
-# def send(request):
-#     if request.method == "POST":
-#         message = NewsForm(request.POST)
-#         message.save()
-#         subject = message.cleaned_data.get('title')
-#         plain_message = message.cleaned_data.get('text')
-#         rating = message.cleaned_data.get('rating_post')
-#         to = "leshukovv87@mail.ru"
-#         file_silently = True
-#         send_mail(subject, plain_message, rating, [to], file_silently)
-#
-#         return redirect('/users')
 
 
 

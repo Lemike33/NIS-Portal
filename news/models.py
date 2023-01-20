@@ -25,6 +25,8 @@ class Author(models.Model):
 class Category(models.Model):
     """Themes of news"""
     category_name = models.CharField(unique=True, max_length=50, verbose_name='Уникальная тема')
+    # Подписки на категорию может быть подписано МНОГО пользователей User-ов
+    subscribers = models.ManyToManyField(User, through='UserCategory', blank=True)
 
     class Meta:
         verbose_name = 'Категория'
@@ -108,7 +110,12 @@ class Comment(models.Model):
         return self.rating_comment
 
 
+class UserCategory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'{self.user} -> {self.category}'
 
 
 

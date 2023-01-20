@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'news',
+    # 'news',  # заменено на news.apps.NewsConfig чтобы работали сигналы
+    'news.apps.NewsConfig',
     'django_filters',
     'users',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -147,4 +149,17 @@ EMAIL_HOST_PASSWORD = 'vjmcbjntmssyjbie'  # пароль приложений - 
 ACCOUNT_FORMS = {'signup': 'users.forms.BasicSignupForm'}
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 SERVER_EMAIL = 'lemikes33@gmail.com'  # это будет у нас вместо аргумента FROM в массовой рассылке
+
+ADMINS = [
+    ('lemike', 'leshukovv87@mail.ru'),
+    # список всех админов в формате ('имя', 'их почта')
+]
+
+# формат даты, которую будет воспринимать наш задачник (вспоминаем модуль по фильтрам)
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+
+# если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше,
+# но как правило, это сильно бьёт по производительности сервера
+APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
